@@ -1,0 +1,43 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project-3</title>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <meta author="Massimiliano Biondi" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.4/d3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/britecharts@1/dist/bundled/britecharts.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/britecharts/dist/css/britecharts.min.css"
+        type="text/css" />
+</head>
+
+<body>
+    <div id="checkboxes">
+        <citation id="agId">ID Agenzia: N/A</citation>
+        <table>
+            <tbody id="feed"></tbody>
+        </table>
+        <button type="button" id="newcheck">add new checkbox</button>
+    </div>
+    <div id="statsPositive">
+        <table>
+            <tbody id="feed_statsP"></tbody>
+        </table>
+        <button type="button" id="newstat">add new positive stat</button>
+    </div>
+    <div id="statsNegative">
+        <table>
+            <tbody id="feed_statsN"></tbody>
+        </table>
+        <button type="button" id="newstat">add new negative stat</button>
+    </div>
+    <div id="scripts">
+        <script src="./rest.js"></script>
+        <script src="./script.js"></script>
+    </div>
+</body>
+
+</html>

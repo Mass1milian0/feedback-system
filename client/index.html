@@ -1,0 +1,69 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project-3</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <meta author="Massimiliano Biondi">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.4/d3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/britecharts@1/dist/bundled/britecharts.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/britecharts/dist/css/britecharts.min.css"
+        type="text/css" />
+</head>
+
+
+<body>
+    <h1>ClientSide</h1>
+
+
+    <div id="checkboxes">
+        <citation id="agId">ID Agenzia: N/A</citation>
+        <table>
+            <tbody id="feed"></tbody>
+        </table>
+    </div>
+    <div id="stats">
+        <div class="js-donut-container"></div>
+        <div class="legend-container"></div>
+    </div>
+
+    <div id="scripts">
+        <script src="./rest.js"></script>
+        <script src="./script.js"></script>
+    </div>
+        
+
+        
+
+        <script>
+            const data = [
+                { name: 'Shiny', id: 1, quantity: 86, percentage: 5 },
+                { name: 'Blazing', id: 2, quantity: 300, percentage: 18 },
+                { name: 'Dazzling', id: 3, quantity: 276, percentage: 16 },
+                { name: 'Radiant', id: 4, quantity: 195, percentage: 11 },
+                { name: 'Sparkling', id: 5, quantity: 36, percentage: 2 },
+                { name: 'Other', id: 0, quantity: 814, percentage: 48 }
+            ];
+            function createDonutChart() {
+                let donutChart = britecharts.donut();
+
+                donutChart
+                    .width(400)
+                    .height(300);
+
+                d3.select('.js-donut-container').datum(data).call(donutChart);
+
+            }
+            const legendContainer = d3.select('.legend-container');
+            const legendData = data
+            const chartLegend = britecharts.legend();
+            legendContainer.datum(legendData).call(chartLegend)
+
+            createDonutChart();
+        </script>
+</body>
+
+</html>
