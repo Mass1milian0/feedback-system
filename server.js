@@ -73,10 +73,10 @@ app.put("/api/id",(req,res) =>{
 })
 
 
-app.put("/api/checkboxes/:name",function(req,res){
-    var check = req.params.name;
+app.put("/api/checkboxes/:id",function(req,res){
+    var check = req.params.id;
     for(var i = 0;i<checkboxes.length;i++){
-        if(check==checkboxes[i].name){
+        if(check==checkboxes[i].id){
             checkboxes[i]=req.body;
             res.status(200).send(checkboxes[i]);
             return;
@@ -185,17 +185,21 @@ wsServer.on("request", function(request){
     connection.on("message", function(message){
         if(message.type ==="utf8"){
             var msg = JSON.parse(message.utf8Data);
-            if(message.operation=="add_check"){
+            if(msg.operation=="add_check"){
                 checks.push(msg.new_checks)
                 for(var i = 0; i<connections.length;i++){
                     listChecks(connections[i]);
                 }
             }
-            if(message.operation=="delete_check"){
-                const newChecks = checks.filter((oldCheck) => {
-                    return oldCheck.name !== msg.checkname
-                });
+            if(msg.operation=="delete_check"){
+                console.log("got del Req",msg)
+                const newChecks = checks.filter(check => check.id != msg.id)
                 checks = newChecks;
+                for(var i = 0; i<connections.length;i++){
+                    listChecks(connections[i]);
+                }
+            }
+            if(msg.operation="reload_check"){
                 for(var i = 0; i<connections.length;i++){
                     listChecks(connections[i]);
                 }

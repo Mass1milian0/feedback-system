@@ -1,0 +1,15 @@
+.flexboxRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.btn{
+    width: 70px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+.btnCentering{
+    margin-left: 10px;
+}

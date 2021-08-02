@@ -40,6 +40,7 @@ function load_socket() {
       if (msg.operation == "listChecks") {
           console.log("recieved");
           checks = msg.checks;
+          table.innerHTML="";
           loadCheckboxes()
       }
   });
