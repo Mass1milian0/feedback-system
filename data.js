@@ -6,17 +6,16 @@ var checkboxes = [
     }
 ];
 
-var statsPositive = [
+var statsMax;
+
+var stats = [
     
 ];
 
-var statsNegative = [
-   
-]
 
 var agID = "N/A";
 
 module.exports.checkboxes = checkboxes;
-module.exports.statsPositive = statsPositive;
-module.exports.statsNegative = statsNegative;
+module.exports.stats = stats;
 module.exports.agID = agID;
+module.exports.statsMax = statsMax;

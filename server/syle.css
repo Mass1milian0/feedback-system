@@ -13,3 +13,9 @@
 .btnCentering{
     margin-left: 10px;
 }
+.valueAccepted{
+    border-color: green;
+}
+.valueInvalid{
+    border-color: red;
+}

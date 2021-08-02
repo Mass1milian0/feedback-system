@@ -1,13 +1,13 @@
 var rpc = require("./rpc.js");
-var datos = require("./datos");
+var data = require("./data");
 
-var checkboxes = datos.checkboxes;
+var checkboxes = data.checkboxes;
 
-var statsPositive = datos.statsPositive;
+var stats = data.stats;
 
-var statsNegative = datos.statsNegative;
+var agID = data.agID;
 
-var agID = datos.agID;
+var statsMax = data.statsMax
 
 var port = process.env.PORT || 4444;
 
@@ -17,6 +17,16 @@ var app = express();
 app.use(express.json());
 app.use("/client",express.static("./client"));
 app.use("/server",express.static("./server"));
+
+app.get("/api/max",(req,res)=>{
+    try {
+        res.status(200).send(statsMax);
+        return;
+    } catch (err) {
+        alert(err);
+        return;
+    }
+})
 
 app.get("/api/id",(req,res)=>{
     try{
@@ -52,9 +62,9 @@ app.get("/api/checkboxes",function(req,res){
     }
 
 });
-app.get("/api/statsPositive",function(req,res){
+app.get("/api/stats",function(req,res){
     try{
-        res.status(200).json(statsPositive);
+        res.status(200).json(stats);
         return;
     }catch(err){
         alert(err);
@@ -62,27 +72,28 @@ app.get("/api/statsPositive",function(req,res){
         return;
     }
 
-});
-app.get("/api/statsNegative",function(req,res){
-    try{
-        res.status(200).json(statsNegative);
-        return;
-    }catch(err){
-        alert(err);
-        res.status(400);
-        return;
-    }
 });
 
 app.post("/api/checkboxes/:name",function(req,res){
     checkboxes.push(req.body)
     res.status(200)
+    return;
 });
 
+app.post("/api/stats/:id",(req,res)=>{
+    stats
+})
+
+app.put("/api/max",(req,res)=>{
+    statsMax = req.body
+    res.status(200).send(statsMax);
+    return;
+})
+
 app.put("/api/id",(req,res) =>{
-    var newID = req.body
     agID = req.body
     res.status(200).send(agID)
+    return;
 })
 
 
@@ -98,24 +109,12 @@ app.put("/api/checkboxes/:id",function(req,res){
     res.status(404);
 
 });
-app.put("/api/statsPositive/:name",function(req,res){
+app.put("/api/stats/:id",function(req,res){
     var stat = req.params.name;
-    for(var i = 0;i<statsPositive.length;i++){
-        if(stat==statsPositive[i].name){
-            statsPositive[i]=req.body;
-            res.status(200).send(statsPositive[i]);
-            return;
-        }
-    }
-    res.status(404);
-
-});
-app.put("/api/statsNegative/:name",function(req,res){
-    var stat = req.params.name;
-    for(var i = 0;i<statsNegative.length;i++){
-        if(stat==statsNegative[i].name){
-            statsNegative[i]=req.body;
-            res.status(200).send(statsNegative[i]);
+    for(var i = 0;i<stats.length;i++){
+        if(stat==stats[i].name){
+            stats[i]=req.body;
+            res.status(200).send(stats[i]);
             return;
         }
     }
@@ -133,20 +132,12 @@ function ListCheckboxes(){
     return checks1;
 
 }
-function listPStats(){
+function listStats(){
     var pStats = [];
-    for(var i = 0;i<statsPositive.length;i++){
-        pStats.push(statsPositive[i]);
+    for(var i = 0;i<stats.length;i++){
+        pStats.push(stats[i]);
     }
     return pStats;
-
-}
-function listNStats(){
-    var nStats = [];
-    for(var i = 0;i<statsNegative.length;i++){
-        nStats.push(statsNegative[i]);
-    }
-    return nStats;
 
 }
 
@@ -157,7 +148,7 @@ function getId(){
 var listenerPort = process.env.LISTENERPORT || 8080
 app.listen(listenerPort, function () {});
 
-var checks = datos.checkboxes
+var checks = data.checkboxes
 function listChecks(connection){
     connection.sendUTF(JSON.stringify({
         operation: "listChecks",
@@ -169,8 +160,7 @@ var servidor = rpc.server();
 var app = servidor.createApp("wb_server"); 
 
 app.register(ListCheckboxes);
-app.register(listPStats);
-app.register(listNStats);
+app.register(listStats);
 app.register(getId);
 
 var http = require("http");
@@ -213,6 +203,12 @@ wsServer.on("request", function(request){
             if(msg.operation="reload_check"){
                 for(var i = 0; i<connections.length;i++){
                     listChecks(connections[i]);
+                }
+            }
+            if(msg.operation="add_statP"){
+                stats.push(msg.newstat)
+                for(var i = 0; i<connections.length;i++){
+                    //TODO - listStats()
                 }
             }
         }
