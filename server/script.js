@@ -95,8 +95,18 @@ document.getElementById("newcheck").addEventListener('click',()=>{
   addCheck("test",(lastRow + 1) + "c")
 })
 
+socketport = 4444
+
+rest.get("/api/socketport",(err,res)=>{
+  if(err == 200){
+    socketport = res
+  }else{
+    alert(err + " " + res)
+  }
+})
+
 function load_socket() {
-  socket = new WebSocket("ws://localhost:4444","main");
+  socket = new WebSocket("ws://localhost:"+socketport,"main");
   
   socket.addEventListener("open", function (event) {
     console.log("connected");
