@@ -9,6 +9,8 @@ var statsNegative = datos.statsNegative;
 
 var agID = datos.agID;
 
+var port = process.env.PORT || 4444;
+
 var express = require("express"); 
 var app = express(); 
 
@@ -22,6 +24,17 @@ app.get("/api/id",(req,res)=>{
         return;
     }
     catch (err){
+        alert(err);
+        res.status(400);
+        return;
+    }
+})
+
+app.get("/api/socketport",(req,res)=>{
+    try{
+        res.status(200).send(port);
+        return;
+    }catch(err){
         alert(err);
         res.status(400);
         return;
@@ -169,8 +182,6 @@ var wsServer = new WebSocketServer({
     httpServer: httpServer
 });
 
-
-var port = process.env.PORT || 4444;
 httpServer.listen(port, function(){
     
 });
