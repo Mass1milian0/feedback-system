@@ -20,21 +20,22 @@ app.use("/server",express.static("./server"));
 
 app.get("/api/max",(req,res)=>{
     try {
-        res.status(200).send(statsMax);
+        res.status(200).send(statsMax + "");
         return;
     } catch (err) {
-        alert(err);
+        console.log(err);
+        res.status(400)
         return;
     }
 })
 
 app.get("/api/id",(req,res)=>{
     try{
-        res.status(200).send(agID)
+        res.status(200).send(toString(agID))
         return;
     }
     catch (err){
-        alert(err);
+        console.log(err);
         res.status(400);
         return;
     }
@@ -42,10 +43,11 @@ app.get("/api/id",(req,res)=>{
 
 app.get("/api/socketport",(req,res)=>{
     try{
-        res.status(200).send(port);
+        res.status(200).send("4444")
         return;
-    }catch(err){
-        alert(err);
+    }
+    catch (err){
+        console.log(err);
         res.status(400);
         return;
     }
@@ -81,11 +83,12 @@ app.post("/api/checkboxes/:name",function(req,res){
 });
 
 app.post("/api/stats/:id",(req,res)=>{
-    stats
+    //TODO - convert to put
 })
 
 app.put("/api/max",(req,res)=>{
-    statsMax = req.body
+    console.log(req);
+    statsMax = req.body.max
     res.status(200).send(statsMax);
     return;
 })
@@ -132,14 +135,6 @@ function ListCheckboxes(){
     return checks1;
 
 }
-function listStats(){
-    var pStats = [];
-    for(var i = 0;i<stats.length;i++){
-        pStats.push(stats[i]);
-    }
-    return pStats;
-
-}
 
 function getId(){
     return agID;
@@ -153,6 +148,13 @@ function listChecks(connection){
     connection.sendUTF(JSON.stringify({
         operation: "listChecks",
         checks: checks
+    }))
+}
+
+function listStats(connection){
+    connection.sendUTF(JSON.stringify({
+        operation: "listStats",
+        stats: stats
     }))
 }
 
@@ -182,6 +184,7 @@ wsServer.on("request", function(request){
     var connection = request.accept("main", request.origin);
     connections.push(connection);
     listChecks(connection);
+    listStats(connection);
     console.log("Client Connected");
     connection.on("message", function(message){
         if(message.type ==="utf8"){
@@ -193,7 +196,6 @@ wsServer.on("request", function(request){
                 }
             }
             if(msg.operation=="delete_check"){
-                console.log("got del Req",msg)
                 const newChecks = checks.filter(check => check.id != msg.id)
                 checks = newChecks;
                 for(var i = 0; i<connections.length;i++){
@@ -205,10 +207,23 @@ wsServer.on("request", function(request){
                     listChecks(connections[i]);
                 }
             }
-            if(msg.operation="add_statP"){
+            if(msg.operation="add_stat"){
                 stats.push(msg.newstat)
                 for(var i = 0; i<connections.length;i++){
-                    //TODO - listStats()
+                    listStats(connections[i]);
+                }
+            }
+            if(msg.operation="delete_stat"){ //FIXME waiting for stackoverflow to do his magic
+                console.log(stats.length);
+                //const newStats = stats.filter(stat => stat.id != msg.id)
+                //stats = newStats;
+                for(var i = 0; i<connections.length;i++){
+                    listStats(connections[i]);
+                }
+            }
+            if(msg.operation="reload_stat"){
+                for(var i = 0; i<connections.length;i++){
+                    listStats(connections[i]);
                 }
             }
         }

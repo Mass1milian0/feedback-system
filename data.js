@@ -6,10 +6,15 @@ var checkboxes = [
     }
 ];
 
-var statsMax;
+var statsMax = 0;
 
 var stats = [
-    
+    {
+        name: "test",
+        value: 0,
+        id: "0ps",
+        isPositive: true
+    }
 ];
 
 

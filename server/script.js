@@ -1,9 +1,6 @@
-lastRow = -1;
-lastRowStatsP = -1;
-lastRowStatsN = -1;
 const table = document.getElementById("feed");
 const statTableP = document.getElementById("feed_statsP")
-const statTableP = document.getElementById("feed_statsN")
+const statTableN = document.getElementById("feed_statsN")
 checks = [];
 var socket = null;
 let stats = []
@@ -16,8 +13,50 @@ function checkInput(input) {
     return false;
   }
 }
+var socketport = 4444
+
+rest.get("/api/socketport", (err, res) => {
+  if (err == 200) {
+    console.log(res);
+    socketport = res
+  } else {
+    alert(err + " " + res)
+  }
+})
 
 load_socket();
+
+function getLastIdChecks(){
+  function parseId(input){
+    return parseInt(input.replace(/\D/g, '')) || null
+  }
+  maxId = 0;
+  for(var i = 0;i < checks.length;i++){
+    id = parseId(checks[i].id)
+    if(id != null){
+      if(i + 1 != checks.length && maxId < parseId(checks[i+1].id)){
+        maxId = parseId(checks[i+1].id)
+      }
+    }
+  }
+  return maxId
+}
+function getLastIdStats(){
+  function parseId(input){
+    return parseInt(input.replace(/\D/g, '')) || null
+  }
+  maxId = 0;
+  for(var i = 0;i < stats.length;i++){
+    id = parseId(stats[i].id)
+    if(id != null){
+      if(i + 1 != stats.length && maxId < parseId(stats[i+1].id)){
+        maxId = parseId(stats[i+1].id)
+      }
+    }
+  }
+  return maxId
+}
+
 
 function reloadChecks() {
   socket.send(JSON.stringify({
@@ -43,18 +82,6 @@ function addCheck(nameP, id) {
   }))
 }
 
-function addPStat(name,id,value){
-  socket.send(JSON.stringify({
-    operation: "add_statP",
-    newstat: {
-      name: name,
-      id: id,
-      value: value,
-      isPositive: true
-    }
-  }))
-}
-
 function updateCheck(id, update) {
   console.log(id, update);
   rest.put("/api/checkboxes/" + id, update, (err, res) => {
@@ -66,8 +93,44 @@ function updateCheck(id, update) {
   })
 }
 
-function insertStat(row,i,id){
+function reloadStats(){
+  socket.send(JSON.stringify({
+    operation: "reload_stats"
+  }))
+}
+
+function addStat(name,id,value,isPositive){
+  socket.send(JSON.stringify({
+    operation: "add_stat",
+    newstat: {
+      name: name,
+      id: id,
+      value: value,
+      isPositive: isPositive
+    }
+  }))
+}
+
+function deleteStat(id) {
+  socket.send(JSON.stringify({
+    operation: "delete_stat",
+    id: id
+  }));
+}
+
+function updateStat(id,update){
+  rest.put("/api/stats/" + id, update, (err, res) => {
+    if (err == 200) {
+      reloadStats()
+    } else {
+      alert(err + " " + res)
+    }
+  })
+}
+
+function insertStat(row,i,id,isPositive){
   cell = row.insertCell(0)
+  nameIn = document.createElement("input");
   input = document.createElement("input");
   div = document.createElement('div');
   deleteBtn = document.createElement('button');
@@ -75,16 +138,35 @@ function insertStat(row,i,id){
   deleteBtn.classList.add("btn");
   div.innerHTML = "Delete"
   deleteBtn.type = 'button';
-  input.setAttribute("placeholder", stats[i].name)
+  nameIn.setAttribute("placeholder",stats[i].name)
+  input.setAttribute("placeholder", stats[i].value)
   cell.classList.add("flexboxRow")
   input.id = id
+  input.classList.add("sIn")
+  input.setAttribute("isPositive",isPositive)
   deleteBtn.addEventListener('click', function () {
-    console.log("delete REQ sent");
-    //TODO - deleteStat()
+    console.log(this.parentNode.querySelector(".sIn").id);
+    deleteStat(this.parentNode.querySelector(".sIn").id)
   })
   input.addEventListener("blur", function () {
-    //TODO - update stats
+    stat = this.parentNode.querySelector(".sIn")
+    updatedStat = {
+      name: stat.name,
+      value: this.value,
+      id: stat.id,
+      isPositive: stat.isPositive
+    }
   })
+  nameIn.addEventListener("blur", function () {
+    stat = this.parentNode.querySelector(".sIn")
+    updatedStat = {
+      name: this.value,
+      value: stat.value,
+      id: stat.id,
+      isPositive: stat.isPositive
+    }
+  })
+  cell.appendChild(nameIn)
   cell.appendChild(input)
   cell.appendChild(deleteBtn)
   deleteBtn.appendChild(div)
@@ -94,11 +176,18 @@ function loadStats(){
   var nstats = [];
   var pstats = [];
   for (var i = 0; i < stats.length; i++){
+    console.log(stats);
     if(stats[i].isPositive){
       pstats.push(stats[i])
     }else{
       nstats.push(stats[i])
     }
+  }
+  for(var i = 0;i < pstats.length;i++){
+    insertStat(statTableP.insertRow(i),i,i+"ps","true")
+  }
+  for(var i = 0; i < nstats.length; i++){
+    insertStat(statTableP.insertRow(i),i,i+"ns","false")
   }
 }
 
@@ -116,7 +205,7 @@ function loadCheckboxes() {
     deleteBtn.type = 'button';
     checkbox.type = 'checkbox';
     checkbox.checked = checks[i].checked
-    checkbox.id = i + "c"
+    checkbox.id = checks[i].id;
     input.setAttribute("placeholder", checks[i].name)
     cell.classList.add("flexboxRow")
     deleteBtn.addEventListener('click', function () {
@@ -132,19 +221,23 @@ function loadCheckboxes() {
       }
       updateCheck(this.parentNode.childNodes[1].id, update)
     })
-    //TODO - add update on check
+    checkbox.addEventListener("change",function(){
+      var update = {
+        name: this.value,
+        checked: this.parentNode.childNodes[1].checked,
+        id: this.parentNode.childNodes[1].id
+      }
+      updateCheck(this.parentNode.childNodes[1].id, update)
+    })
     cell.appendChild(input)
     cell.appendChild(checkbox);
     cell.appendChild(deleteBtn)
     deleteBtn.appendChild(div)
-    if (i + 1 == checks.length) {
-      lastRow = i;
-    }
   }
 }
 
 document.getElementById("newcheck").addEventListener('click', () => {
-  addCheck("new check", (lastRow + 1) + "c")
+  addCheck("new check", (getLastIdChecks + 1) + "c")
 })
 
 document.getElementById("requiredMax").addEventListener('focus', function () {
@@ -152,31 +245,13 @@ document.getElementById("requiredMax").addEventListener('focus', function () {
 })
 document.getElementById("requiredMax").addEventListener('blur', function () {
   this.setAttribute("isFocused", 'false')
-  if (this.value != "") {
-    if (checkInput(this.value)) {
-      rest.put("/api/max", this.value, (err, res) => {
-        if (err == 200) {
-          this.classList.add("valueAccepted");
-          this.classList.remove("valueInvalid");
-        } else {
-          alert(err + " " + res)
-        }
-      })
-    }else{
-      this.classList.remove("valueAccepted");
-      this.classList.add("valueInvalid");
-      this.title = "INVALID INPUT, ONLY NUMBERS ALLOWED"
-    }
-  }else{
-    this.classList.remove("valueAccepted");
-    this.classList.remove("valueInvalid");
-  }
 })
 document.getElementById("requiredMax").addEventListener('keyup', function (key) {
-  if (key == 'enter' && this.isFocused) {
+  if (key.key == 'Enter' && this.getAttribute("isFocused")) {
     if (this.value != "") {
       if (checkInput(this.value)) {
-        rest.put("/api/max", this.value, (err, res) => {
+        console.log(this.value);
+        rest.put("/api/max", {max:this.value}, (err, res) => {
           if (err == 200) {
             this.classList.add("valueAccepted");
             this.classList.remove("valueInvalid");
@@ -196,16 +271,11 @@ document.getElementById("requiredMax").addEventListener('keyup', function (key) 
   }
 })
 
-
-
-socketport = 4444
-
-rest.get("/api/socketport", (err, res) => {
-  if (err == 200) {
-    socketport = res
-  } else {
-    alert(err + " " + res)
-  }
+document.getElementById("newstatp").addEventListener("click",function(){
+  addStat("newStat",(getLastIdStats()+1) + "ps",0,"true")
+})
+document.getElementById("newstatn").addEventListener("click",function(){
+  addStat("newStat",(getLastIdStats()+1) + "ns",0,"false")
 })
 
 function load_socket() {
@@ -217,15 +287,16 @@ function load_socket() {
 
   socket.addEventListener("message", function (event) {
     var msg = JSON.parse(event.data);
-    console.log(msg)
     if (msg.operation == "listChecks") {
-      console.log(msg);
       checks = msg.checks;
       table.innerHTML = "";
       loadCheckboxes()
     }
     if(msg.operation == "listStats"){
-      //TODO - get both postive and negative stats
+      stats = msg.stats;
+      statTableP.innerHTML = "";
+      statTableN .innerHTML = "";
+      loadStats();
     }
   });
 }
