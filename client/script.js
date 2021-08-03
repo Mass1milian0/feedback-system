@@ -3,6 +3,16 @@ const table = document.getElementById("feed");
 checks = [];
 var socket = null;
 
+socketport = 4444
+
+rest.get("/api/socketport",(err,res)=>{
+  if(err == 200){
+    socketport = res
+  }else{
+    alert(err + " " + res)
+  }
+})
+
 load_socket();
 
 function loadCheckboxes(){
@@ -26,15 +36,6 @@ function reloadChecks(){
   table.innerHTML = "";
   loadCheckboxes();
 }
-socketport = 4444
-
-rest.get("/api/socketport",(err,res)=>{
-  if(err == 200){
-    socketport = res
-  }else{
-    alert(err + " " + res)
-  }
-})
 function load_socket() {
   socket = new WebSocket("ws://localhost:" + socketport,"main");
   

@@ -83,19 +83,21 @@ app.post("/api/checkboxes/:name",function(req,res){
 });
 
 app.post("/api/stats/:id",(req,res)=>{
-    //TODO - convert to put
+    stats.push(req.body);
+    res.status(200);
+    return;
 })
 
 app.put("/api/max",(req,res)=>{
     console.log(req);
-    statsMax = req.body.max
+    statsMax = req.body.max;
     res.status(200).send(statsMax);
     return;
 })
 
 app.put("/api/id",(req,res) =>{
-    agID = req.body
-    res.status(200).send(agID)
+    agID = req.body;
+    res.status(200).send(agID);
     return;
 })
 
@@ -202,26 +204,26 @@ wsServer.on("request", function(request){
                     listChecks(connections[i]);
                 }
             }
-            if(msg.operation="reload_check"){
+            if(msg.operation=="reload_check"){
                 for(var i = 0; i<connections.length;i++){
                     listChecks(connections[i]);
                 }
             }
-            if(msg.operation="add_stat"){
+            if(msg.operation=="add_stat"){
                 stats.push(msg.newstat)
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
             }
-            if(msg.operation="delete_stat"){ //FIXME waiting for stackoverflow to do his magic
+            if(msg.operation=="delete_stat"){
                 console.log(stats.length);
-                //const newStats = stats.filter(stat => stat.id != msg.id)
-                //stats = newStats;
+                const newStats = stats.filter(stat => stat.id != msg.id)
+                stats = newStats;
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
             }
-            if(msg.operation="reload_stat"){
+            if(msg.operation=="reload_stat"){
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
