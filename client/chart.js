@@ -1,3 +1,6 @@
+//TODO connect to current data in data.js
+//TODO set treshold to max amount
+//TODO dataset for positive and negative values
 const labels = [1,2,3,4,5,6,7]
 const data = {
   labels: labels,
