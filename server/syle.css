@@ -19,3 +19,9 @@
 .valueInvalid{
     border-color: red;
 }
+.positiveValue{
+    border-color: green;
+}
+.negativeValue{
+    border-color: red;
+}

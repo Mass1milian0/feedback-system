@@ -89,7 +89,6 @@ app.post("/api/stats/:id",(req,res)=>{
 })
 
 app.put("/api/max",(req,res)=>{
-    console.log(req);
     statsMax = req.body.max;
     res.status(200).send(statsMax);
     return;
@@ -115,9 +114,9 @@ app.put("/api/checkboxes/:id",function(req,res){
 
 });
 app.put("/api/stats/:id",function(req,res){
-    var stat = req.params.name;
+    var stat = req.params.id;
     for(var i = 0;i<stats.length;i++){
-        if(stat==stats[i].name){
+        if(stat==stats[i].id){
             stats[i]=req.body;
             res.status(200).send(stats[i]);
             return;
@@ -129,13 +128,21 @@ app.put("/api/stats/:id",function(req,res){
 
 //client getters
 
-function ListCheckboxes(){
+function listCheckboxes(){
     var checks1 = [];
     for(var i = 0;i<checkboxes.length;i++){
         checks1.push(checkboxes[i]);
     }
     return checks1;
 
+}
+
+function listStatistics(){
+    var stats1 = []
+    for(var i = 0;i<stats.length;i++){
+        stats1.push(stats[i])
+    }
+    return stats1;
 }
 
 function getId(){
@@ -163,9 +170,10 @@ function listStats(connection){
 var servidor = rpc.server();
 var app = servidor.createApp("wb_server"); 
 
-app.register(ListCheckboxes);
+app.register(listCheckboxes);
 app.register(listStats);
 app.register(getId);
+app.register(listStatistics)
 
 var http = require("http");
 var httpServer = http.createServer(); 
@@ -210,20 +218,20 @@ wsServer.on("request", function(request){
                 }
             }
             if(msg.operation=="add_stat"){
+                console.log(msg.newstat);
                 stats.push(msg.newstat)
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
             }
             if(msg.operation=="delete_stat"){
-                console.log(stats.length);
                 const newStats = stats.filter(stat => stat.id != msg.id)
                 stats = newStats;
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
             }
-            if(msg.operation=="reload_stat"){
+            if(msg.operation=="reload_stats"){
                 for(var i = 0; i<connections.length;i++){
                     listStats(connections[i]);
                 }
