@@ -311,8 +311,8 @@ document.getElementById("newstatn").addEventListener("click", function () {
   addStat("newStat", (getLastIdStats(false) + 1) + "ns", 0, "false")
 })
 document.getElementById("agID").placeholder = getId()
-document.getElementById("agID").addEventListener("change",function(){
-  updateId(this.value)
+document.getElementById("agID").addEventListener("blur",function(){
+  updateId({id: this.value.toString()})
   this.placeholder = getId()
 })
 function load_socket() {

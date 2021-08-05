@@ -1,6 +1,6 @@
 var app = rpc("localhost", "wb_server");
 lastRow = 0;
-var id = app.procedure("listStatistics")()
+var id = app.procedure("getId")()
 const table = document.getElementById("feed");
 checks = [];
 var socket = null;
@@ -15,7 +15,7 @@ rest.get("/api/socketport",(err,res)=>{
   }
 })
 
-document.getElementById("agId").innerHTML="ID Agenzia: "
+document.getElementById("agId").innerHTML="ID Agenzia: " + id
 
 load_socket();
 

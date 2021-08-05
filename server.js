@@ -31,7 +31,9 @@ app.get("/api/max",(req,res)=>{
 
 app.get("/api/id",(req,res)=>{
     try{
-        res.status(200).send(toString(agID))
+        console.log("got here")
+        res.status(200).send(agID.toString())
+        console.log(res);
         return;
     }
     catch (err){
@@ -95,8 +97,8 @@ app.put("/api/max",(req,res)=>{
 })
 
 app.put("/api/id",(req,res) =>{
-    agID = req.body;
-    res.status(200).send(agID);
+    agID = req.body.id;
+    res.status(200);
     return;
 })
 

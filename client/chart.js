@@ -1,6 +1,6 @@
 var app = rpc("localhost", "wb_server");
 var socket = null;
-var stats = app.procedure("getId")()
+var stats = app.procedure("listStatistics")()
 var max = app.procedure("getMax")()
 var canvas = document.getElementById("barChart");
 var ctx = canvas.getContext("2d");
