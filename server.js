@@ -127,6 +127,9 @@ app.put("/api/stats/:id",function(req,res){
 });
 
 //client getters
+function getMax(){
+    return statsMax;
+}
 
 function listCheckboxes(){
     var checks1 = [];
@@ -167,12 +170,12 @@ function listStats(connection){
     }))
 }
 
-var servidor = rpc.server();
-var app = servidor.createApp("wb_server"); 
+var server = rpc.server();
+var app = server.createApp("wb_server"); 
 
 app.register(listCheckboxes);
-app.register(listStats);
 app.register(getId);
+app.register(getMax)
 app.register(listStatistics)
 
 var http = require("http");

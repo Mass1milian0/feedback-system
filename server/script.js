@@ -242,6 +242,7 @@ function loadCheckboxes() {
     checkbox.checked = checks[i].checked
     checkbox.id = checks[i].id;
     input.setAttribute("placeholder", checks[i].name)
+    input.classList.add("nIn")
     cell.classList.add("flexboxRow")
     deleteBtn.addEventListener('click', function () {
       deleteCheck(this.parentNode.childNodes[1].id)
@@ -256,7 +257,7 @@ function loadCheckboxes() {
     })
     checkbox.addEventListener("change", function () {
       var update = {
-        name: this.value,
+        name: this.parentNode.querySelector(".nIn").placeholder,
         checked: this.parentNode.childNodes[1].checked,
         id: this.parentNode.childNodes[1].id
       }
@@ -310,7 +311,7 @@ document.getElementById("newstatn").addEventListener("click", function () {
   addStat("newStat", (getLastIdStats(false) + 1) + "ns", 0, "false")
 })
 document.getElementById("agID").placeholder = getId()
-document.getElementById("agID").addEventListener("change",function(){ //TODO maybe websocket this, even tho it's not needed
+document.getElementById("agID").addEventListener("change",function(){
   updateId(this.value)
   this.placeholder = getId()
 })

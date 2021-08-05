@@ -13,7 +13,7 @@ var stats = [
         name: "test",
         value: 0,
         id: "0ps",
-        isPositive: true
+        isPositive: "true"
     }
 ];
 
