@@ -1,6 +1,5 @@
 const table = document.getElementById("feed");
-const statTableP = document.getElementById("feed_statsP")
-const statTableN = document.getElementById("feed_statsN")
+const statTable = document.getElementById("feed_stats")
 var checks = [];
 var id;
 var socket = null;
@@ -218,10 +217,10 @@ function loadStats() {
   for (var i = 0; i < stats.length; i++) {
     if (stats[i].isPositive.toString() == "true") {
       pstats.push(stats[i])
-      insertStat(statTableP.insertRow(i), i, stats[i].id, "true")
+      insertStat(statTable.insertRow(i), i, stats[i].id, "true")
     } else {
       nstats.push(stats[i])
-      insertStat(statTableP.insertRow(i), i,stats[i].id, "false")
+      insertStat(statTable.insertRow(i), i,stats[i].id, "false")
     }
   }
 }
@@ -331,8 +330,7 @@ function load_socket() {
     }
     if (msg.operation == "listStats") {
       stats = msg.stats;
-      statTableP.innerHTML = "";
-      statTableN.innerHTML = "";
+      statTable.innerHTML = "";
       loadStats();
     }
   });

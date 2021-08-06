@@ -17,6 +17,7 @@ var app = express();
 app.use(express.json());
 app.use("/client",express.static("./client"));
 app.use("/server",express.static("./server"));
+app.use("/entry",express.static("./data-entry"));
 
 app.get("/api/max",(req,res)=>{
     try {

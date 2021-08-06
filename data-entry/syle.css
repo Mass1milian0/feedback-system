@@ -1,0 +1,14 @@
+.flexboxRow{
+    display: flex;
+    flex-direction: row;
+    align-items: last baseline;
+}
+.positiveValue{
+    border: 2px solid green;
+}
+.negativeValue{
+    border: 2px solid red;
+}
+p{
+    margin-right: 20px
+}
