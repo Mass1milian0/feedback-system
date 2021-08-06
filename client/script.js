@@ -4,16 +4,7 @@ var id = app.procedure("getId")()
 const table = document.getElementById("feed");
 checks = [];
 var socket = null;
-
-socketport = 4444
-
-rest.get("/api/socketport",(err,res)=>{
-  if(err == 200){
-    socketport = res
-  }else{
-    alert(err + " " + res)
-  }
-})
+var HOST = location.origin.replace(/^http/, 'ws');
 
 document.getElementById("agId").innerHTML="ID Agenzia: " + id
 
@@ -41,7 +32,7 @@ function reloadChecks(){
   loadCheckboxes();
 }
 function load_socket() {
-  socket = new WebSocket("ws://localhost:" + socketport,"main");
+  socket = new WebSocket(HOST,"main");
   
   socket.addEventListener("open", function (event) {
     console.log("connected");

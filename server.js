@@ -32,9 +32,7 @@ app.get("/api/max",(req,res)=>{
 
 app.get("/api/id",(req,res)=>{
     try{
-        console.log("got here")
         res.status(200).send(agID.toString())
-        console.log(res);
         return;
     }
     catch (err){
@@ -155,8 +153,6 @@ function getId(){
     return agID;
 }
 
-var listenerPort = process.env.LISTENERPORT || 8080
-app.listen(listenerPort, function () {});
 
 var checks = data.checkboxes
 function listChecks(connection){
@@ -173,6 +169,16 @@ function listStats(connection){
     }))
 }
 
+httpServer = app.listen(port,()=>{
+    console.log("listening for connection to " + port)
+})
+
+var WebSocketServer = require("websocket").server;
+var wsServer = new WebSocketServer({
+    httpServer: httpServer
+});
+
+
 var server = rpc.server();
 var app = server.createApp("wb_server"); 
 
@@ -181,18 +187,6 @@ app.register(getId);
 app.register(getMax)
 app.register(listStatistics)
 
-var http = require("http");
-var httpServer = http.createServer(); 
-
-
-var WebSocketServer = require("websocket").server;
-var wsServer = new WebSocketServer({
-    httpServer: httpServer
-});
-
-httpServer.listen(port, function(){
-    
-});
 
 var connections = [];
 

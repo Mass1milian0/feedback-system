@@ -6,6 +6,7 @@ var socket = null;
 let stats = []
 var nstats = [];
 var pstats = [];
+var HOST = location.origin.replace(/^http/, 'ws');
 
 function checkInput(input) {
   if (input.match(/^\d+$/)) {
@@ -14,15 +15,6 @@ function checkInput(input) {
     return false;
   }
 }
-var socketport = 4444
-
-rest.get("/api/socketport", (err, res) => {
-  if (err == 200) {
-    socketport = res
-  } else {
-    alert(err + " " + res)
-  }
-})
 
 load_socket();
 
@@ -315,7 +307,7 @@ document.getElementById("agID").addEventListener("blur",function(){
   this.placeholder = getId()
 })
 function load_socket() {
-  socket = new WebSocket("ws://localhost:" + socketport, "main");
+  socket = new WebSocket(HOST, "main");
 
   socket.addEventListener("open", function (event) {
     console.log("connected");
