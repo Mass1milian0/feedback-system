@@ -10,3 +10,32 @@
     margin-top: 20px;
     margin-left: 20px;
 }
+
+.flexboxRow{
+    display: flex;
+    flex-direction: row;
+    border-radius: 4px;
+    align-items: last baseline;
+    flex-wrap: wrap;
+}
+.positiveValue{
+    border: 2px solid green;
+    border-radius: 4px;
+}
+.negativeValue{
+    border: 2px solid red;
+    border-radius: 4px;
+}
+p{
+    margin-right: 20px
+}
+tr{
+    border: 2px solid black;
+    height: 25;
+    border-radius: 4px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+body{
+    background-color: #eee;
+}
