@@ -128,7 +128,6 @@ rest.get("/api/id",(err,res)=>{
 
 function load_socket() {
   socket = new WebSocket(HOST, "main");
-  socket = new WebSocket("ws");
 
   socket.addEventListener("open", function (event) {
     console.log("connected");
