@@ -1,10 +1,10 @@
-var app = rpc("localhost", "wb_server");
 lastRow = 0;
 var id = app.procedure("getId")()
 const table = document.getElementById("feed");
 checks = [];
 var socket = null;
 var HOST = location.origin.replace(/^http/, 'ws');
+var app = rpc(location.origin.replace(/^http/, ''), "wb_server");
 
 document.getElementById("agId").innerHTML="ID Agenzia: " + id
 
