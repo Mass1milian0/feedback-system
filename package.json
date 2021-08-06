@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "a feedback system",
   "main": "server.js",
+  "engines": {
+    "node": "14.17.3"
+  },
   "dependencies": {
     "bufferutil": "^4.0.3",
     "cors": "^2.8.5",
