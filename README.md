@@ -3,7 +3,7 @@
 
 this allows the user from a server to set some checkboxes and stats to then be visible to another user as readonly data used as feedback
 
-very WIP, about halfway done... maybe
+maybe done, maybe not, it worked when i tested it but some black wizadry can happen
 
 # how to run
 
@@ -16,4 +16,4 @@ on your explorer go to localhost:8080/server to be able to edit things and local
 * PORT , socketPort
 * LISTENERPORT , webserver port
 
-very wip expect bugs and no security at all
+expect bugs and no security at all
