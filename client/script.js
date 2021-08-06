@@ -1,10 +1,18 @@
 lastRow = 0;
-var id = app.procedure("getId")()
 const table = document.getElementById("feed");
 checks = [];
 var socket = null;
 var HOST = location.origin.replace(/^http/, 'ws');
-var app = rpc(location.origin.replace(/^http/, ''), "wb_server");
+var id;
+
+rest.get("/api/id",(err,res)=>{
+  if (err == 200){
+    id = res
+  }else{
+    console.log(err)
+    return
+  }
+})
 
 document.getElementById("agId").innerHTML="ID Agenzia: " + id
 

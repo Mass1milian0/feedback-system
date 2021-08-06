@@ -127,32 +127,6 @@ app.put("/api/stats/:id",function(req,res){
 
 });
 
-//client getters
-function getMax(){
-    return statsMax;
-}
-
-function listCheckboxes(){
-    var checks1 = [];
-    for(var i = 0;i<checkboxes.length;i++){
-        checks1.push(checkboxes[i]);
-    }
-    return checks1;
-
-}
-
-function listStatistics(){
-    var stats1 = []
-    for(var i = 0;i<stats.length;i++){
-        stats1.push(stats[i])
-    }
-    return stats1;
-}
-
-function getId(){
-    return agID;
-}
-
 
 var checks = data.checkboxes
 function listChecks(connection){
@@ -177,16 +151,6 @@ var WebSocketServer = require("websocket").server;
 var wsServer = new WebSocketServer({
     httpServer: httpServer
 });
-
-
-var server = rpc.server();
-var app = server.createApp("wb_server"); 
-
-app.register(listCheckboxes);
-app.register(getId);
-app.register(getMax)
-app.register(listStatistics)
-
 
 var connections = [];
 
