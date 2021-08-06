@@ -7,14 +7,14 @@ var id;
 
 rest.get("/api/id",(err,res)=>{
   if (err == 200){
-    id = res
+    document.getElementById("agId").innerHTML="ID Agenzia: " + res
   }else{
     console.log(err)
     return
   }
 })
 
-document.getElementById("agId").innerHTML="ID Agenzia: " + id
+
 
 load_socket();
 
