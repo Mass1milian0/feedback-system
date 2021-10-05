@@ -13,7 +13,6 @@ maybe done, maybe not, it worked when i tested it but some black wizadry can hap
 on your explorer go to localhost:8080/server to be able to edit things and localhost:8080/client to view data as readonly
 (you can set env variables for the server port and websocket port)
 
-* PORT , socketPort
-* LISTENERPORT , webserver port
+* PORT , httpserver port
 
 expect bugs and no security at all
